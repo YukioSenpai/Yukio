@@ -8,7 +8,7 @@ import session from 'express-session'
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import User from './User'
-import { DatabaseUserInterface } from './Interfaces/UserInterfaces'
+import { DatabaseUserInterface, UserInterface } from './Interfaces/UserInterfaces'
 
 const LocalStrategy = passportLocal.Strategy
 
@@ -39,7 +39,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // Routes
-app.post('/register', async (req, res) => {
+app.post('/register', async (req: Request, res: Response) => {
   const { username, password } = req.body
   if (!username || !password || typeof username !== "string" || typeof password !== "string") {
     res.send("Improper Values")
@@ -61,37 +61,37 @@ app.post('/register', async (req, res) => {
 })
 
 
-// // Passport 
-// passport.use(new LocalStrategy((username: string, password: string, done) => {
-//   User.findOne({ username: username }, (err, user: DatabaseUserInterface) => {
-//     if (err) throw err
-//     if (!user) return done(null, false)
-//     bcrypt.compare(password, user.password, (err, result: boolean) => {
-//       if (err) throw err
-//       if (result === true) {
-//         return done(null, user)
-//       } else {
-//         return done(null, false)
-//       }
-//     })
-//   })
-// })
-// )
+// Passport 
+passport.use(new LocalStrategy((username: string, password: string, done) => {
+  User.findOne({ username: username }, (err: Error, user: DatabaseUserInterface) => {
+    if (err) throw err
+    if (!user) return done(null, false)
+    bcrypt.compare(password, user.password, (err, result: boolean) => {
+      if (err) throw err
+      if (result === true) {
+        return done(null, user)
+      } else {
+        return done(null, false)
+      }
+    })
+  })
+})
+)
 
-// passport.serializeUser((user: DatabaseUserInterface, cb) => {
-//   cb(null, user._id)
-// })
+passport.serializeUser((user: DatabaseUserInterface, cb) => {
+  cb(null, user._id)
+})
 
-// passport.deserializeUser((id: string, cb) => {
-//   User.findOne({ _id: id }, (err, user: DatabaseUserInterface) => {
-//     const userInformation: UserInterface = {
-//       username: user.username,
-//       isAdmin: user.isAdmin,
-//       id: user._id
-//     }
-//     cb(err, userInformation)
-//   })
-// })
+passport.deserializeUser((id: string, cb) => {
+  User.findOne({ _id: id }, (err: Error, user: DatabaseUserInterface) => {
+    const userInformation: UserInterface = {
+      username: user.username,
+      isAdmin: user.isAdmin,
+      id: user._id
+    }
+    cb(err, userInformation)
+  })
+})
 
 // const isAdministratorMiddleware = (req: Request, res: Response, next: NextFunction) => {
 //   const { user }: any = req
@@ -111,18 +111,18 @@ app.post('/register', async (req, res) => {
 //   }
 // }
 
-// app.post("/login", passport.authenticate("local"), (req, res) => {
-//   res.send("success")
-// })
+app.post("/login", passport.authenticate("local"), (req, res) => {
+  res.send("Successfully Authenticated")
+})
 
-// app.get("/user", (req, res) => {
-//   res.send(req.user)
-// })
+app.get("/user", (req, res) => {
+  res.send(req.user)
+})
 
-// app.get("/logout", (req, res) => {
-//   req.logout()
-//   res.send("success")
-// })
+app.get("/logout", (req, res) => {
+  req.logout()
+  res.send("success")
+})
 
 // app.post("/deleteuser", isAdministratorMiddleware, async (req, res) => {
 //   const { id } = req?.body

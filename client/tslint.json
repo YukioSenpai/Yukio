@@ -1,11 +1,5 @@
 {
     "rules": {
-        "no-circular-imports": [
-            true,
-            {
-                "search-depth-limit": 10
-            }
-        ],
         "class-name": true,
         "deprecation": true,
         "curly": true,

@@ -15,12 +15,12 @@ const LocalStrategy = passportLocal.Strategy
 dotenv.config()
 
 mongoose.connect("mongodb+srv://yukio:admin@cluster0.rhs8s.mongodb.net/<dbname>?retryWrites=true&w=majority", {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 }, (err: Error) => {
-    if (err) throw err
-    console.log("Connected to mongoose")
+  if (err) throw err
+  console.log("Connected to mongoose")
 })
 
 // Middleware
@@ -31,7 +31,7 @@ app.use(
   session({
     secret: "secretcode",
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: true
   })
 )
 app.use(cookieParser())
@@ -112,7 +112,7 @@ passport.deserializeUser((id: string, cb) => {
 // }
 
 app.post("/login", passport.authenticate("local"), (req, res) => {
-  res.send("Successfully Authenticated")
+  res.send("successfully authenticated")
 })
 
 app.get("/user", (req, res) => {
@@ -120,8 +120,10 @@ app.get("/user", (req, res) => {
 })
 
 app.get("/logout", (req, res) => {
-  req.logout()
-  res.send("success")
+  req.session.destroy(() => {
+    req.logout()
+    res.send("successfully logout")
+  })
 })
 
 // app.post("/deleteuser", isAdministratorMiddleware, async (req, res) => {

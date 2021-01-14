@@ -1,5 +1,5 @@
 import mongoose, { Error } from 'mongoose'
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import passport from 'passport'
 import passportLocal from 'passport-local'
@@ -93,62 +93,63 @@ passport.deserializeUser((id: string, cb) => {
   })
 })
 
-// const isAdministratorMiddleware = (req: Request, res: Response, next: NextFunction) => {
-//   const { user }: any = req
-//   if (user) {
-//     User.findOne({ username: user.username }, (err, doc: DatabaseUserInterface) => {
-//       if (err) throw err
-//       if (doc?.isAdmin) {
-//         next()
-//       }
-//       else {
-//         res.send("Sorry, only admin's can perform this.")
-//       }
-//     })
-//   }
-//   else {
-//     res.send("Sorry, you arent logged in.")
-//   }
-// }
+const isAdministratorMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const { user }: any = req
+  if (user) {
+    User.findOne({ username: user.username }, (err: Error, doc: DatabaseUserInterface) => {
+      if (err) throw err
+      if (doc?.isAdmin) {
+        next()
+      }
+      else {
+        res.send("Sorry, only admin's can perform this.")
+      }
+    })
+  }
+  else {
+    res.send("Sorry, you arent logged in.")
+  }
+}
 
-app.post("/login", passport.authenticate("local"), (req, res) => {
+app.post("/login", passport.authenticate("local"), (_req, res: Response) => {
   res.send("successfully authenticated")
 })
 
-app.get("/user", (req, res) => {
+app.get("/user", (req: Request, res: Response) => {
   res.send(req.user)
 })
 
-app.get("/logout", (req, res) => {
+app.get("/logout", (req: Request, res: Response) => {
   req.session.destroy(() => {
     req.logout()
     res.send("successfully logout")
   })
 })
 
-// app.post("/deleteuser", isAdministratorMiddleware, async (req, res) => {
-//   const { id } = req?.body
-//   await User.findByIdAndDelete(id, (err) => {
-//     if (err) throw err
-//   })
-//   res.send("success")
-// })
+app.post("/deleteuser", isAdministratorMiddleware, async (req: Request, res: Response) => {
+  const { id }: { id: string } = req?.body
+  await User.findByIdAndDelete(id).then(() => {
+    res.send("success")
+  }).catch((err: Error) => {
+    console.log(err)
+  })
+})
 
-// app.get("/getallusers", isAdministratorMiddleware, async (req, res) => {
-//   await User.find({}, (err, data: DatabaseUserInterface[]) => {
-//     if (err) throw err
-//     const filteredUsers: UserInterface[] = []
-//     data.forEach((item: DatabaseUserInterface) => {
-//       const userInformation = {
-//         id: item._id,
-//         username: item.username,
-//         isAdmin: item.isAdmin
-//       }
-//       filteredUsers.push(userInformation)
-//     })
-//     res.send(filteredUsers)
-//   })
-// })
+app.get("/getallusers", isAdministratorMiddleware, async (_req, res: Response) => {
+  await User.find({}, (err: Error, data: DatabaseUserInterface[]) => {
+    if (err) throw err
+    const filteredUsers: UserInterface[] = []
+    data.forEach((item: DatabaseUserInterface) => {
+      const userInformation = {
+        id: item._id,
+        username: item.username,
+        isAdmin: item.isAdmin
+      }
+      filteredUsers.push(userInformation)
+    })
+    res.send(filteredUsers)
+  })
+})
 
 
 app.listen(4000, () => {

@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { User } from '../business/User'
+import { myContext } from '../context/Context'
 
 export const Profile: React.FC = () => {
-    void 0
+    const ctx: User = useContext(myContext)
     return (
         <div>
-            Profile
+            <div>Profile</div>
+            <div>{ctx.username}</div>
         </div>
     )
 }

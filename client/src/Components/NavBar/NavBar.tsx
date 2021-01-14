@@ -4,7 +4,6 @@ import { myContext } from '../../context/Context'
 import { useTranslator } from '../../hooks/useTranslator'
 import { NavbarMsg } from './navbar.msg'
 import { css } from './navbar.styles'
-import Axios from 'axios'
 
 export const NavBar: React.FC = () => {
     const msg = useTranslator(NavbarMsg)
@@ -12,6 +11,7 @@ export const NavBar: React.FC = () => {
 
     return (
         <div className={css.container}>
+            <Link to="/">Home</Link>
             {ctx ?
                 <>
                     <Link to="/logout">Logout</Link>
@@ -25,7 +25,6 @@ export const NavBar: React.FC = () => {
                     <Link to="/login">{msg.login}</Link>
                 </>
             }
-            <Link to="/">Home</Link>
         </div>
     )
 }

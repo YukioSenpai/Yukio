@@ -14,7 +14,7 @@ const LocalStrategy = passportLocal.Strategy
 
 dotenv.config()
 
-mongoose.connect("mongodb+srv://yukio:admin@cluster0.rhs8s.mongodb.net/<dbname>?retryWrites=true&w=majority", {
+mongoose.connect(`${process.env.FIRSTSTRING}${process.env.USER}:${process.env.PASSWORD}${process.env.SECONDSTRING}`, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true

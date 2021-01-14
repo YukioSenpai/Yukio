@@ -16,6 +16,8 @@ export const Login: React.FC = () => {
             if (res.data === 'successfully authenticated') {
                 window.location.href = '/'
             }
+        }, () => {
+            console.log("Failure");
         })
     }
 

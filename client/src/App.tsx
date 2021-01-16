@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { NavBar } from './components/NavBar/NavBar'
+import { NavBar } from './components/navBar/NavBar'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { AdminPage } from './pages/AdminPage'

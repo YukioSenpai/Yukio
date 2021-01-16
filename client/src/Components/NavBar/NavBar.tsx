@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { myContext } from '../../context/Context'
 import { useTranslator } from '../../hooks/useTranslator'
-import { NavbarMsg } from './navbar.msg'
-import { css } from './navbar.styles'
+import { NavbarMsg } from '../navBar/navbar.msg'
+import { css } from '../navBar/navbar.styles'
 
 export const NavBar: React.FC = () => {
     const msg = useTranslator(NavbarMsg)

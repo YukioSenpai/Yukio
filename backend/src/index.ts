@@ -8,11 +8,16 @@ import session from 'express-session'
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import User from './User'
+import GoogleUser from './GoogleUsers'
 import { DatabaseUserInterface, UserInterface } from './Interfaces/UserInterfaces'
+import Google from 'passport-google-oauth20'
+import { DatabaseGoogleUserInterface } from './Interfaces/GoogleUserInterface'
 
 const LocalStrategy = passportLocal.Strategy
 
 dotenv.config()
+
+// const GoogleStrategy = Google.Strategy
 
 mongoose.connect(`${process.env.FIRSTSTRING}${process.env.USER}:${process.env.PASSWORD}${process.env.SECONDSTRING}`, {
   useCreateIndex: true,
@@ -92,6 +97,43 @@ passport.deserializeUser((id: string, cb) => {
     cb(err, userInformation)
   })
 })
+
+// //Passport google auth
+// passport.use(new GoogleStrategy({
+//   clientID: `${process.env.GOOGLE_CIENT_ID}`,
+//   clientSecret: `${process.env.GOOGLE_CIENT_SECRET}`,
+//   callbackURL: "http://localhost:4000/auth/google/callback"
+// },
+//   async (_accessToken: string, _refreshToken: string, profile: Google.Profile, done: Google.VerifyCallback) => {
+//     const newUser = {
+//       id: profile.id,
+//       username: profile.name?.givenName
+//     }
+
+//     try {
+//       let user = await User.findOne({ googleId: profile.id })
+
+//       if (user) {
+//         done(undefined, user)
+//       } else {
+//         user = await User.create(newUser)
+//         done(undefined, user)
+//       }
+//     } catch (err) {
+//       console.error(err)
+//     }
+//   }
+// ))
+
+// app.get('/auth/google',
+//   passport.authenticate('google', { scope: ['profile'] }));
+
+// app.get('/auth/google/callback',
+//   passport.authenticate('google', { failureRedirect: '/login' }),
+//   function (_req: Request, res: Response) {
+//     // Successful authentication, redirect home.
+//     res.redirect('/');
+//   });
 
 const isAdministratorMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { user }: any = req

@@ -6,7 +6,7 @@ export const Profile: React.FC = () => {
     const ctx: User = useContext(myContext)
     return (
         <div>
-            <div>User currently login{ctx.username}</div>
+            <div>User currently login : {ctx.username}</div>
         </div>
     )
 }
